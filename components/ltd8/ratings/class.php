@@ -31,7 +31,7 @@ class Ltd8RatingsComponent extends \CBitrixComponent implements Controllerable
 
     public function executeComponent()
     {
-        CModule::IncludeModule('ltd8.ratings');
+        \Bitrix\Main\Loader::includeModule('ltd8.ratings');
 
         if ($this->startResultCache()) {
 

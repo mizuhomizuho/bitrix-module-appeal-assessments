@@ -2,8 +2,6 @@
 
 namespace Ltd8\Ratings\Controller;
 
-var_dump(2223);
-exit;
 class Stars extends \Bitrix\Main\Engine\Controller
 {
     public function configureActions()

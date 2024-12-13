@@ -3,12 +3,10 @@
 use Bitrix\Main\Application;
 use Bitrix\Main\Entity\Base;
 use Bitrix\Main\Loader;
-use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\ModuleManager;
 use Ltd8\Ratings\MainTable;
 use Ltd8\Ratings\DataTable;
-
-Loc::loadMessages(__FILE__);
+use Ltd8\Ratings\CriterionTable;
 
 class ltd8_ratings extends CModule
 {
@@ -59,6 +57,8 @@ class ltd8_ratings extends CModule
         DataTable::getEntity()->createDbTable();
         $tableName = DataTable::getEntity()->getDBTableName();
         $connection->query("CREATE INDEX ix_ltd8_ratings_data_main_id ON $tableName (MAIN_ID)");
+
+        CriterionTable::getEntity()->createDbTable();
     }
 
 //    public function InstallFiles()
@@ -81,6 +81,12 @@ class ltd8_ratings extends CModule
         $connection = Application::getInstance()->getConnection();
         if ($connection->isTableExists(MainTable::getTableName())) {
             $connection->dropTable(MainTable::getTableName());
+        }
+        if ($connection->isTableExists(DataTable::getTableName())) {
+            $connection->dropTable(DataTable::getTableName());
+        }
+        if ($connection->isTableExists(CriterionTable::getTableName())) {
+            $connection->dropTable(CriterionTable::getTableName());
         }
     }
 
