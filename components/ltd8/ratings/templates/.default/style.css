@@ -1,0 +1,115 @@
+.ltd8-ratings__stars {
+    display: flex;
+    width: 260px;
+    height: 40px;
+    margin: 0 -8px;
+    /*background-color: red;*/
+}
+    .ltd8-ratings__stars-item {
+        /*background-color: green;*/
+        padding: 0 8px;
+        flex-basis: 20%;
+        display: flex;
+        cursor: pointer;
+        opacity: .44;
+    }
+    .ltd8-ratings__stars-item:hover {
+        opacity: 1;
+    }
+        .ltd8-ratings__stars-item:before {
+            content: '';
+            flex-grow: 1;
+            padding: 0 8px;
+            background-image: url(./images/star.svg);
+            background-size: contain;
+            background-repeat: no-repeat;
+            cursor: pointer;
+        }
+
+
+
+
+
+
+
+
+
+
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="5"]:hover
+) .ltd8-ratings__stars-item[data-stars="4"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="5"]:hover
+) .ltd8-ratings__stars-item[data-stars="3"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="5"]:hover
+) .ltd8-ratings__stars-item[data-stars="2"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="5"]:hover
+) .ltd8-ratings__stars-item[data-stars="1"],
+
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="4"]:hover
+) .ltd8-ratings__stars-item[data-stars="3"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="4"]:hover
+) .ltd8-ratings__stars-item[data-stars="2"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="4"]:hover
+) .ltd8-ratings__stars-item[data-stars="1"],
+
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="3"]:hover
+) .ltd8-ratings__stars-item[data-stars="2"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="3"]:hover
+) .ltd8-ratings__stars-item[data-stars="1"],
+
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="2"]:hover
+) .ltd8-ratings__stars-item[data-stars="1"]
+
+{
+    opacity: 1;
+}
+
+
+
+
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="5"][data-active]
+) .ltd8-ratings__stars-item[data-stars="4"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="5"][data-active]
+) .ltd8-ratings__stars-item[data-stars="3"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="5"][data-active]
+) .ltd8-ratings__stars-item[data-stars="2"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="5"][data-active]
+) .ltd8-ratings__stars-item[data-stars="1"],
+
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="4"][data-active]
+) .ltd8-ratings__stars-item[data-stars="3"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="4"][data-active]
+) .ltd8-ratings__stars-item[data-stars="2"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="4"][data-active]
+) .ltd8-ratings__stars-item[data-stars="1"],
+
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="3"][data-active]
+) .ltd8-ratings__stars-item[data-stars="2"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="3"][data-active]
+) .ltd8-ratings__stars-item[data-stars="1"],
+
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="2"][data-active]
+) .ltd8-ratings__stars-item[data-stars="1"]
+
+{
+    opacity: 1;
+}
