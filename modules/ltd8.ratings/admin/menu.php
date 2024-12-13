@@ -13,7 +13,7 @@ return array(
             array(
                 'text' => 'Оценки',
                 'title' => 'Оценки',
-                'url' => '/bitrix/admin/ltd8_ratings.php?page=main',
+                'url' => '/bitrix/admin/ltd8_ratings.php?page=criterion_add',
             ),
             array(
                 'text' => 'Добавить критерий',
