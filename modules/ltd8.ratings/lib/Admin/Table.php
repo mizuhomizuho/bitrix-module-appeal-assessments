@@ -14,12 +14,33 @@ class Table extends Base
     private ?array $list = null;
     private ?PageNavigation $navigation = null;
     private ?array $headers = null;
-    private ?object $query = null;
+    private ?array $select = null;
+    private ?array $runtime = null;
     private array $filter = [];
 
-    public function __construct(private string $tableClass, private \CAdminList $cAdminList)
+    public function __construct(private string $tableClass, private \CAdminUiList $cAdminList)
     {
 
+    }
+
+    private function getRuntime(): ?array
+    {
+        return $this->runtime;
+    }
+
+    public function setRuntime(array $runtime): void
+    {
+        $this->runtime = $runtime;
+    }
+
+    private function getSelect(): ?array
+    {
+        return $this->select;
+    }
+
+    public function setSelect(array $select): void
+    {
+        $this->select = $select;
     }
 
     private function getTableClass(): string
@@ -27,7 +48,7 @@ class Table extends Base
         return $this->tableClass;
     }
 
-    private function getCAdminList(): \CAdminList
+    private function getCAdminList(): \CAdminUiList
     {
         return $this->cAdminList;
     }
@@ -40,16 +61,6 @@ class Table extends Base
     public function setFilter(array $filter): void
     {
         $this->filter = $filter;
-    }
-
-    private function getQuery(): ?object
-    {
-        return $this->query;
-    }
-
-    public function setQuery(object $query): void
-    {
-        $this->query = $query;
     }
 
     private function getHeaders(): ?array
@@ -69,7 +80,7 @@ class Table extends Base
             $tableName = $tableClass::getTableName();
             $nav = new PageNavigation($tableName . "_nav");
             $nav->allowAllRecords(true)
-                ->setPageSize(20)
+                ->setPageSize($this->getCAdminList()->getNavSize())
                 ->initFromUri();
             $this->setNavigation($nav);
         }
@@ -90,41 +101,27 @@ class Table extends Base
 
         $nav = $this->getNavigation();
 
-        $query = $this->getQuery();
+        $params = [
+            "filter" => $this->getFilter(),
+            "count_total" => true,
+            "offset" => $nav->getOffset(),
+            "limit" => $nav->getLimit(),
+        ];
 
-        if ($query === null) {
-            $listInstance = $tableClass::getList([
-                "filter" => $this->getFilter(),
-                "count_total" => true,
-                "offset" => $nav->getOffset(),
-                "limit" => $nav->getLimit(),
-            ]);
-            $countAll = $listInstance->getCount();
-        } else {
-            foreach ($this->getFilter() as $value) {
-                $query->where($value);
-            }
-            $countAllQuery = clone $query;
-            $countAllQuery->setSelect(["COUNT_ALL"]);
-            $countAllQuery->registerRuntimeField(
-                "",
-                new ExpressionField(
-                    "COUNT_ALL",
-                    "COUNT(*)",
-                )
-            );
-            $countAll = $countAllQuery->fetch()['COUNT_ALL'];
-            $listInstance = $query
-                ->setOffset($nav->getOffset())
-                ->setLimit($nav->getLimit());
+        if ($this->getSelect() !== null) {
+            $params["select"] = $this->getSelect();
         }
 
-        $listResult = $listInstance->fetchAll();
+        if ($this->getRuntime() !== null) {
+            $params["runtime"] = $this->getRuntime();
+        }
+
+        $listInstance = $tableClass::getList($params);
 
         return [
             "instance" => $listInstance,
-            "countAll" => $countAll,
-            "list" => $listResult,
+            "countAll" => $listInstance->getCount(),
+            "list" => $listInstance->fetchAll(),
         ];
     }
 
@@ -169,6 +166,10 @@ class Table extends Base
         $tableName = $tableClass::getTableName();
         $lAdmin = $this->getCAdminList();
 
+        $lAdmin->AddGroupActionTable([
+            "delete" => "Удалить",
+        ]);
+
         $list = $this->getList()["list"];
 
         foreach ($list as $item) {
@@ -185,15 +186,6 @@ class Table extends Base
                         "LINK" => $uri->getUri(),
                     ];
                 }
-                $uri->addParams([
-                    $tableName . "_mode" => "delete",
-                    $tableName . "_nav" => $request->get($tableName . "_nav"),
-                ]);
-                $listActions[] = [
-                    "ICON" => "delete",
-                    "TEXT" => "Удалить",
-                    "LINK" => $uri->getUri(),
-                ];
             }
             $row->AddActions($listActions);
         }
@@ -237,9 +229,15 @@ class Table extends Base
         $tableClass = $this->getTableClass();
         $tableName = $tableClass::getTableName();
 
-        if ($request->get($tableName . "_mode") === "delete") {
-            $tableClass::delete((int)$request->get($tableName . "_id"));
-            \CAdminMessage::ShowNote("Успешно удалено");
+        if ($request->get("action_button_$tableName") === "delete" && is_array($request->get("ID"))) {
+            foreach ($request->get("ID") as $id) {
+                $tableClass::delete((int)$id);
+            }
         }
+    }
+
+    public function echoTable()
+    {
+        $this->getCAdminList()->DisplayList();
     }
 }

@@ -5,7 +5,7 @@ namespace Ltd8\Ratings\Admin;
 use Bitrix\Main\Application;
 use Bitrix\Main\Text\HtmlFilter;
 
-class Edit extends Base
+class CriterionEdit extends Base
 {
     private bool $isEdit;
 
@@ -56,11 +56,11 @@ class Edit extends Base
 
         $this->change();
 
-        $currentValue = "";
+        $currentValue = [];
         if ($isEdit) {
             $result = $tableClass::getById((int)$request->get($tableName . "_id"));
             $row = $result->fetch();
-            $currentValue = $row["NAME"];
+            $currentValue = $row;
         }
 
         $tabText = "Добавить";
@@ -78,11 +78,24 @@ class Edit extends Base
 
         <form method="post">
 
-            <?= bitrix_sessid_post() ?>
+            <?
+            echo bitrix_sessid_post();
+            $tabControl->Begin();
+            $tabControl->BeginNextTab();
 
-            <?php $tabControl->Begin() ?>
-
-            <?php $tabControl->BeginNextTab() ?>
+            if ($currentValue["ID"]) {
+                ?>
+                <tr>
+                    <td>
+                        ID
+                    </td>
+                    <td>
+                        <?= HtmlFilter::encode($currentValue["ID"]) ?>
+                    </td>
+                </tr>
+                <?php
+            }
+            ?>
 
             <tr>
                 <td>
@@ -90,7 +103,7 @@ class Edit extends Base
                 </td>
                 <td>
                     <input type="text" style="width: 100%;" name="<?= $tableName ?>_name"
-                           value="<?= HtmlFilter::encode($currentValue) ?>"/>
+                           value="<?= HtmlFilter::encode($currentValue["NAME"]) ?>"/>
                 </td>
             </tr>
 

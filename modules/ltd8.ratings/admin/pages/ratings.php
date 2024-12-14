@@ -30,25 +30,25 @@ $request = Application::getInstance()->getContext()->getRequest();
 $tableClass = DataTable::class;
 $tableName = $tableClass::getTableName();
 
-$lAdmin = new \CAdminList($tableName);
+$lAdmin = new \CAdminUiList($tableName);
 
 $adminRatings = new Ratings();
-$adminRatings->initFilter($lAdmin);
+$adminRatings->initFilter($tableName);
 $params = $adminRatings->getQueryParams();
 
 $table = new Table($tableClass, $lAdmin);
 $table->setFilter($adminRatings->getFilter());
 $table->setHeaders($params["headers"]);
-$table->setQuery($params["query"]);
+$table->setSelect($params["select"]);
+$table->setRuntime($params["runtime"]);
+$table->setNoAdd(true);
+$table->setNoEdit(true);
 $table->build();
-
 $lAdmin->CheckListMode();
 
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_after.php");
 
 $adminRatings->echoFilter($tableName);
-$table->setNoAdd(true);
-$table->setNoEdit(true);
-$lAdmin->DisplayList();
+$table->echoTable();
 
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php");
