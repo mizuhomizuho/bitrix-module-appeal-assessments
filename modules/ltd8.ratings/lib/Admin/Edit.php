@@ -5,7 +5,7 @@ namespace Ltd8\Ratings\Admin;
 use Bitrix\Main\Application;
 use Bitrix\Main\Text\HtmlFilter;
 
-class Edit
+class Edit extends Base
 {
     private bool $isEdit;
 
@@ -19,6 +19,10 @@ class Edit
 
     private function change()
     {
+        if (!$this->canWrite()) {
+            return;
+        }
+
         $request = Application::getInstance()->getContext()->getRequest();
         $isEdit = $this->isEdit;
         $tableClass = $this->tableClass;
@@ -40,6 +44,11 @@ class Edit
 
     public function echo()
     {
+        if (!$this->canWrite()) {
+            \CAdminMessage::ShowNote("Доступ запрещен");
+            return;
+        }
+
         $request = Application::getInstance()->getContext()->getRequest();
         $tableClass = $this->tableClass;
         $tableName = $tableClass::getTableName();

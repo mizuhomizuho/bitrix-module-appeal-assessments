@@ -10,17 +10,9 @@ use Ltd8\Ratings\MainTable;
 
 class ltd8_ratings extends CModule
 {
-    public $MODULE_ID;
-    public $MODULE_VERSION;
-    public $MODULE_VERSION_DATE;
-    public $MODULE_NAME;
-    public $MODULE_DESCRIPTION;
-    public $PARTNER_NAME;
-    public $MODULE_GROUP_RIGHTS;
-
     public function __construct()
     {
-        $this->MODULE_ID = basename(dirname(__DIR__));
+        $this->MODULE_ID = "ltd8.ratings";
 
         $arModuleVersion = [];
         include __DIR__ . "/version.php";
@@ -28,11 +20,11 @@ class ltd8_ratings extends CModule
         $this->MODULE_VERSION = $arModuleVersion["VERSION"];
         $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
 
-        $this->MODULE_GROUP_RIGHTS = "Y";
-
         $this->MODULE_NAME = "Оценки обращений";
         $this->MODULE_DESCRIPTION = "Оценки обращений";
         $this->PARTNER_NAME = "Ltd8";
+
+        $this->MODULE_GROUP_RIGHTS = "Y";
     }
 
     public function GetModuleRightList()

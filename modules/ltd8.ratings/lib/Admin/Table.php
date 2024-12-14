@@ -3,41 +3,42 @@
 namespace Ltd8\Ratings\Admin;
 
 use Bitrix\Main\Application;
+use Bitrix\Main\ORM\Fields\ExpressionField;
 use Bitrix\Main\UI\PageNavigation;
 use Bitrix\Main\Web\Uri;
 
-class Table
+class Table extends Base
 {
     private bool $noEdit = false;
     private bool $noAdd = false;
     private ?array $list = null;
     private ?PageNavigation $navigation = null;
-    private array $replaceData = [];
-    private array $replaceHeaders = [];
+    private ?array $headers = null;
+    private ?object $query = null;
 
     public function __construct(private string $tableClass)
     {
 
     }
 
-    private function getReplaceData(): array
+    private function getQuery(): ?object
     {
-        return $this->replaceData;
+        return $this->query;
     }
 
-    public function setReplaceData(array $replaceData): void
+    public function setQuery(object $query): void
     {
-        $this->replaceData = $replaceData;
+        $this->query = $query;
     }
 
-    private function getReplaceHeaders(): array
+    private function getHeaders(): ?array
     {
-        return $this->replaceHeaders;
+        return $this->headers;
     }
 
-    public function setReplaceHeaders(array $replaceHeaders): void
+    public function setHeaders(array $headers): void
     {
-        $this->replaceHeaders = $replaceHeaders;
+        $this->headers = $headers;
     }
 
     private function getNavigation(): ?PageNavigation
@@ -45,12 +46,12 @@ class Table
         return $this->navigation;
     }
 
-    private function setNavigation(?PageNavigation $navigation): void
+    private function setNavigation(PageNavigation $navigation): void
     {
         $this->navigation = $navigation;
     }
 
-    public function loadData(): void
+    private function loadData(): void
     {
         $tableClass = $this->tableClass;
         $tableName = $tableClass::getTableName();
@@ -62,17 +63,37 @@ class Table
             ->setPageSize(20)
             ->initFromUri();
 
-        $list = $tableClass::getList([
-            "filter" => [],
-            "count_total" => true,
-            "offset" => $nav->getOffset(),
-            "limit" => $nav->getLimit(),
-        ]);
+        $query = $this->getQuery();
 
-        $listResult = $list->fetchAll();
+        if ($query === null) {
+            $listInstance = $tableClass::getList([
+                "filter" => [],
+                "count_total" => true,
+                "offset" => $nav->getOffset(),
+                "limit" => $nav->getLimit(),
+            ]);
+            $countAll = $listInstance->getCount();
+        } else {
+            $countAllQuery = clone $query;
+            $countAllQuery->setSelect(["COUNT_ALL"]);
+            $countAllQuery->registerRuntimeField(
+                "",
+                new ExpressionField(
+                    "COUNT_ALL",
+                    "COUNT(*)",
+                )
+            );
+            $countAll = $countAllQuery->fetch()['COUNT_ALL'];
+            $listInstance = $query
+                ->setOffset($nav->getOffset())
+                ->setLimit($nav->getLimit());
+        }
+
+
+        $listResult = $listInstance->fetchAll();
 
         $this->setList([
-            "instance" => $list,
+            "countAll" => $countAll,
             "list" => $listResult,
         ]);
         $this->setNavigation($nav);
@@ -113,44 +134,41 @@ class Table
         $request = Application::getInstance()->getContext()->getRequest();
         $tableClass = $this->tableClass;
         $tableName = $tableClass::getTableName();
-        $replaceHeaders = $this->getReplaceHeaders();
-        $replaceData = $this->getReplaceData();
 
         foreach ($list as $item) {
-
-            foreach ($replaceHeaders as $columnTitle => $newTitle) {
-                if (isset($replaceData[$item["ID"]][$columnTitle])) {
-                    $item[$columnTitle] = $replaceData[$item["ID"]][$columnTitle];
-                }
-            }
-
             $row = $lAdmin->AddRow($item["ID"], $item);
             $uri = new Uri($request->getRequestedPage());
             $listActions = [];
             $uri->addParams(["page" => $request->get("page"), $tableName . "_id" => $item["ID"]]);
-            if (!$this->noEdit) {
-                $uri->addParams([$tableName . "_mode" => "edit"]);
+            if ($this->canWrite()) {
+                if (!$this->isNoEdit()) {
+                    $uri->addParams([$tableName . "_mode" => "edit"]);
+                    $listActions[] = [
+                        "ICON" => "edit",
+                        "TEXT" => "Редактировать",
+                        "LINK" => $uri->getUri(),
+                    ];
+                }
+                $uri->addParams([
+                    $tableName . "_mode" => "delete",
+                    $tableName . "_nav" => $request->get($tableName . "_nav"),
+                ]);
                 $listActions[] = [
-                    "ICON" => "edit",
-                    "TEXT" => "Редактировать",
+                    "ICON" => "delete",
+                    "TEXT" => "Удалить",
                     "LINK" => $uri->getUri(),
                 ];
             }
-            $uri->addParams([
-                $tableName . "_mode" => "delete",
-                $tableName . "_nav" => $request->get($tableName . "_nav"),
-            ]);
-            $listActions[] = [
-                "ICON" => "delete",
-                "TEXT" => "Удалить",
-                "LINK" => $uri->getUri(),
-            ];
             $row->AddActions($listActions);
         }
     }
 
     private function change()
     {
+        if (!$this->canWrite()) {
+            return;
+        }
+
         $request = Application::getInstance()->getContext()->getRequest();
         $tableClass = $this->tableClass;
         $tableName = $tableClass::getTableName();
@@ -168,17 +186,19 @@ class Table
         $request = Application::getInstance()->getContext()->getRequest();
         $tableClass = $this->tableClass;
         $tableName = $tableClass::getTableName();
-        $replaceHeaders = $this->getReplaceHeaders();
 
         $lAdmin = new \CAdminList($tableName);
 
         $listHeaders = [];
-        foreach ($tableClass::getMap() as $value) {
-            $content = $value->getTitle();
-            if (isset($replaceHeaders[$value->getName()])) {
-                $content = $replaceHeaders[$value->getName()];
+
+        if (is_array($this->getHeaders())) {
+            foreach ($this->getHeaders() as $headerKey => $headerValue) {
+                $listHeaders[] = ["id" => $headerKey, "content" => $headerValue, "default" => true];
             }
-            $listHeaders[] = ["id" => $value->getName(), "content" => $content, "default" => true];
+        } else {
+            foreach ($tableClass::getMap() as $value) {
+                $listHeaders[] = ["id" => $value->getName(), "content" => $value->getTitle(), "default" => true];
+            }
         }
         $lAdmin->AddHeaders($listHeaders);
 
@@ -193,13 +213,12 @@ class Table
             $this->loadData();
             $listResult = $this->getList();
         }
-        $list = $listResult["instance"];
 
-        $nav->setRecordCount($list->getCount());
+        $nav->setRecordCount($listResult["countAll"]);
 
         $this->build($listResult["list"], $lAdmin);
 
-        if (!$this->noAdd) {
+        if (!$this->isNoAdd() && $this->canWrite()) {
             $uri = new Uri($request->getRequestedPage());
             $uri->addParams(["page" => $request->get("page"), $tableName . "_mode" => "edit"]);
             $lAdmin->AddAdminContextMenu([[

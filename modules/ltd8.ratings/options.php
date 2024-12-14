@@ -12,7 +12,7 @@ use Moysklad\Sitemap\Initialization;
 
 $module_id = "ltd8.ratings";
 
-if (!($APPLICATION->GetGroupRight($module_id) >= "R")) {
+if ($APPLICATION->GetGroupRight($module_id) < "W") {
     return;
 }
 

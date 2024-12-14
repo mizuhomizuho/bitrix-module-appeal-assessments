@@ -13,16 +13,17 @@ if (!defined("LTD8_RATINGS_ADMIN")) {
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_before.php");
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_after.php");
 
-$moduleId = "ltd8.ratings";
-
 global $APPLICATION;
-if ($APPLICATION->GetGroupRight($moduleId) < "R") {
-    $APPLICATION->AuthForm("Доступ запрещен");
-}
 
 $APPLICATION->SetTitle("Критерии");
 
-Loader::includeModule($moduleId);
+if ($APPLICATION->GetGroupRight(LTD8_RATINGS_MODULE_ID) < "R") {
+    \CAdminMessage::ShowNote("Доступ запрещен");
+    require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php");
+    return;
+}
+
+Loader::includeModule(LTD8_RATINGS_MODULE_ID);
 
 $request = Application::getInstance()->getContext()->getRequest();
 $tableClass = CriterionTable::class;
