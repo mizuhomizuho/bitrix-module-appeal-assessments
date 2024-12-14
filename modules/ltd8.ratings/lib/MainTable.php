@@ -21,14 +21,14 @@ class MainTable extends DataManager
                 [
                     "primary" => true,
                     "autocomplete" => true,
-                    "title" => "Id",
+                    "title" => "ID",
                 ]
             ),
             new IntegerField(
                 "REQUEST_NUMBER",
                 [
                     "required" => true,
-                    "title" => "Case number",
+                    "title" => "Номер обращения",
                 ]
             ),
         ];
