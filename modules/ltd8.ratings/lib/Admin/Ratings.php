@@ -56,10 +56,10 @@ class Ratings
         if ($mainIds) {
             $list = MainTable::getList([
                 "filter" => [
-                    "ID" => $mainIds,
+                    "=ID" => $mainIds,
                 ],
             ]);
-            if ($item = $list->fetch()) {
+            while ($item = $list->fetch()) {
                 $mainResult[$item["ID"]] = $item;
             }
         }
@@ -68,10 +68,10 @@ class Ratings
         if ($mainIds) {
             $list = CriterionTable::getList([
                 "filter" => [
-                    "ID" => $criterionIds,
+                    "=ID" => $criterionIds,
                 ],
             ]);
-            if ($item = $list->fetch()) {
+            while ($item = $list->fetch()) {
                 $criterionResult[$item["ID"]] = $item;
             }
         }

@@ -55,6 +55,8 @@ class Table
         $tableClass = $this->tableClass;
         $tableName = $tableClass::getTableName();
 
+        $this->change();
+
         $nav = new PageNavigation($tableName . "_nav");
         $nav->allowAllRecords(true)
             ->setPageSize(20)
@@ -125,15 +127,19 @@ class Table
             $row = $lAdmin->AddRow($item["ID"], $item);
             $uri = new Uri($request->getRequestedPage());
             $listActions = [];
+            $uri->addParams(["page" => $request->get("page"), $tableName . "_id" => $item["ID"]]);
             if (!$this->noEdit) {
-                $uri->addParams(["page" => $request->get("page"), $tableName . "_mode" => "edit", $tableName . "_id" => $item["ID"]]);
+                $uri->addParams([$tableName . "_mode" => "edit"]);
                 $listActions[] = [
                     "ICON" => "edit",
                     "TEXT" => "Редактировать",
                     "LINK" => $uri->getUri(),
                 ];
             }
-            $uri->addParams([$tableName . "_mode" => "delete"]);
+            $uri->addParams([
+                $tableName . "_mode" => "delete",
+                $tableName . "_nav" => $request->get($tableName . "_nav"),
+            ]);
             $listActions[] = [
                 "ICON" => "delete",
                 "TEXT" => "Удалить",
@@ -158,8 +164,6 @@ class Table
     public function echo()
     {
         global $APPLICATION;
-
-        $this->change();
 
         $request = Application::getInstance()->getContext()->getRequest();
         $tableClass = $this->tableClass;

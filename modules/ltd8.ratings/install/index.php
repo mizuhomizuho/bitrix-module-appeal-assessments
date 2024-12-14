@@ -10,22 +10,41 @@ use Ltd8\Ratings\MainTable;
 
 class ltd8_ratings extends CModule
 {
+    public $MODULE_ID;
+    public $MODULE_VERSION;
+    public $MODULE_VERSION_DATE;
+    public $MODULE_NAME;
+    public $MODULE_DESCRIPTION;
+    public $PARTNER_NAME;
+    public $MODULE_GROUP_RIGHTS;
+
     public function __construct()
     {
         $this->MODULE_ID = basename(dirname(__DIR__));
 
         $arModuleVersion = [];
-        include __DIR__ . '/version.php';
+        include __DIR__ . "/version.php";
 
-        $this->MODULE_VERSION = $arModuleVersion['VERSION'];
-        $this->MODULE_VERSION_DATE = $arModuleVersion['VERSION_DATE'];
+        $this->MODULE_VERSION = $arModuleVersion["VERSION"];
+        $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
 
-        $this->MODULE_GROUP_RIGHTS = 'N';
+        $this->MODULE_GROUP_RIGHTS = "Y";
 
-        $this->MODULE_NAME = 'Оценки обращений';
-        $this->MODULE_DESCRIPTION = 'Оценки обращений';
-        $this->PARTNER_NAME = 'Ltd8';
+        $this->MODULE_NAME = "Оценки обращений";
+        $this->MODULE_DESCRIPTION = "Оценки обращений";
+        $this->PARTNER_NAME = "Ltd8";
+    }
 
+    public function GetModuleRightList()
+    {
+        return [
+            "reference_id" => ["D", "R", "W"],
+            "reference" => [
+                "[D] Доступ запрещен",
+                "[R] Чтение",
+                "[W] Полный доступ"
+            ],
+        ];
     }
 
     public function DoInstall(): void
@@ -44,11 +63,29 @@ class ltd8_ratings extends CModule
 
     private function AddContent(): void
     {
+        $data = [];
+        foreach (range(1, 10) as $idMain) {
+            $data[] = ["REQUEST_NUMBER" => rand(99999, 999999)];
+        }
+        MainTable::addMulti($data);
+
         CriterionTable::addMulti([
             ["NAME" => "Взаимодействие с оператором"],
             ["NAME" => "Вежливость"],
             ["NAME" => "Быстрота и правильность ответов"],
         ]);
+
+        $data = [];
+        foreach (range(1, 10) as $idMain) {
+            foreach (range(1, 3) as $idCriterion) {
+                $data[] = [
+                    "MAIN_ID" => $idMain,
+                    "CRITERION_ID" => $idCriterion,
+                    "STARS" => rand(1, 5),
+                ];
+            }
+        }
+        DataTable::addMulti($data);
     }
 
     public function InstallDB(): void
@@ -83,8 +120,8 @@ class ltd8_ratings extends CModule
 ///home/bitrix/www/bitrix/css/mycomp.exchangerates/style.css
 ///home/bitrix/www/bitrix/js/mycomp.exchangerates/script.js
 //        CopyDirFiles(
-//            __DIR__.'/components/employee',
-//            $_SERVER['DOCUMENT_ROOT'].'/local/components/employee',
+//            __DIR__."/components/employee",
+//            $_SERVER["DOCUMENT_ROOT"]."/local/components/employee",
 //            true,
 //            true
 //        );
@@ -109,6 +146,6 @@ class ltd8_ratings extends CModule
 
 //    public function UninstallFiles()
 //    {
-//        \Bitrix\Main\IO\Directory::deleteDirectory($_SERVER['DOCUMENT_ROOT'].'/local/components/employee');
+//        \Bitrix\Main\IO\Directory::deleteDirectory($_SERVER["DOCUMENT_ROOT"]."/local/components/employee");
 //    }
 }

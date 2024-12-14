@@ -20,6 +20,11 @@ return array(
                 'title' => 'Критерии',
                 'url' => '/bitrix/admin/ltd8_ratings.php?page=criterion',
             ),
+            array(
+                'text' => 'Права доступа',
+                'title' => 'Права доступа',
+                'url' => '/bitrix/admin/settings.php?mid=ltd8.ratings',
+            ),
         ),
     ),
 );

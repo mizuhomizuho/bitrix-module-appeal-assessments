@@ -70,6 +70,9 @@
 
 .ltd8-ratings__stars:has(
     .ltd8-ratings__stars-item[data-stars="5"][data-active]
+) .ltd8-ratings__stars-item[data-stars="5"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="5"][data-active]
 ) .ltd8-ratings__stars-item[data-stars="4"],
 .ltd8-ratings__stars:has(
     .ltd8-ratings__stars-item[data-stars="5"][data-active]
@@ -83,6 +86,9 @@
 
 .ltd8-ratings__stars:has(
     .ltd8-ratings__stars-item[data-stars="4"][data-active]
+) .ltd8-ratings__stars-item[data-stars="4"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="4"][data-active]
 ) .ltd8-ratings__stars-item[data-stars="3"],
 .ltd8-ratings__stars:has(
     .ltd8-ratings__stars-item[data-stars="4"][data-active]
@@ -93,6 +99,9 @@
 
 .ltd8-ratings__stars:has(
     .ltd8-ratings__stars-item[data-stars="3"][data-active]
+) .ltd8-ratings__stars-item[data-stars="3"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="3"][data-active]
 ) .ltd8-ratings__stars-item[data-stars="2"],
 .ltd8-ratings__stars:has(
     .ltd8-ratings__stars-item[data-stars="3"][data-active]
@@ -100,6 +109,13 @@
 
 .ltd8-ratings__stars:has(
     .ltd8-ratings__stars-item[data-stars="2"][data-active]
+) .ltd8-ratings__stars-item[data-stars="2"],
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="2"][data-active]
+) .ltd8-ratings__stars-item[data-stars="1"],
+
+.ltd8-ratings__stars:has(
+    .ltd8-ratings__stars-item[data-stars="1"][data-active]
 ) .ltd8-ratings__stars-item[data-stars="1"]
 
 {
