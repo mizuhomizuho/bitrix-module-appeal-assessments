@@ -22,7 +22,7 @@ class CriterionTable extends DataManager
                 [
                     'primary' => true,
                     'autocomplete' => true,
-                    'title' => 'Id',
+                    'title' => 'ID',
                 ]
             ),
             new StringField(

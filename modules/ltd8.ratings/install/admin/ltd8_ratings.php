@@ -4,7 +4,10 @@ const LTD8_RATINGS_ADMIN = true;
 
 $page = (string) $_GET['page'];
 
-if (!preg_match('/^\w+$/', $page)) {
+if (
+    !preg_match('/^\w+$/', $page)
+    || $_SERVER['DOCUMENT_ROOT'] . '/bitrix/admin/ltd8_ratings.php' !== __FILE__
+) {
     return;
 }
 

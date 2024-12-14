@@ -13,17 +13,12 @@ return array(
             array(
                 'text' => 'Оценки',
                 'title' => 'Оценки',
-                'url' => '/bitrix/admin/ltd8_ratings.php?page=criterion_add',
-            ),
-            array(
-                'text' => 'Добавить критерий',
-                'title' => 'Добавить критерий',
-                'url' => '/bitrix/admin/ltd8_ratings.php?page=criterion_add',
+                'url' => '/bitrix/admin/ltd8_ratings.php?page=ratings',
             ),
             array(
                 'text' => 'Критерии',
                 'title' => 'Критерии',
-                'url' => '/bitrix/admin/ltd8_ratings.php?page=criterion_list',
+                'url' => '/bitrix/admin/ltd8_ratings.php?page=criterion',
             ),
         ),
     ),
