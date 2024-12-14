@@ -10,46 +10,39 @@ class DataTable extends DataManager
 {
     public static function getTableName()
     {
-        return 'ltd8_ratings_data';
+        return "ltd8_ratings_data";
     }
 
     public static function getMap()
     {
         return [
             new IntegerField(
-                'ID',
+                "ID",
                 [
-                    'primary' => true,
-                    'autocomplete' => true,
-                    'title' => 'Id',
+                    "primary" => true,
+                    "autocomplete" => true,
+                    "title" => "ID",
                 ]
             ),
             new IntegerField(
-                'MAIN_ID',
+                "MAIN_ID",
                 [
-                    'required' => true,
-                    'title' => 'Main id',
+                    "required" => true,
+                    "title" => "MAIN_ID",
                 ]
             ),
             new IntegerField(
-                'INTERACTION_WITH_THE_OPERATOR',
+                "CRITERION_ID",
                 [
-                    'required' => true,
-                    'title' => 'Interaction with the operator',
+                    "required" => true,
+                    "title" => "CRITERION_ID",
                 ]
             ),
             new IntegerField(
-                'POLITENESS',
+                "STARS",
                 [
-                    'required' => true,
-                    'title' => 'Politeness',
-                ]
-            ),
-            new IntegerField(
-                'SPEED_AND_ACCURACY_OF_RESPONSES',
-                [
-                    'required' => true,
-                    'title' => 'Speed and accuracy of responses',
+                    "required" => true,
+                    "title" => "Количество звезд",
                 ]
             ),
         ];

@@ -4,9 +4,9 @@ use Bitrix\Main\Application;
 use Bitrix\Main\Entity\Base;
 use Bitrix\Main\Loader;
 use Bitrix\Main\ModuleManager;
-use Ltd8\Ratings\MainTable;
-use Ltd8\Ratings\DataTable;
 use Ltd8\Ratings\CriterionTable;
+use Ltd8\Ratings\DataTable;
+use Ltd8\Ratings\MainTable;
 
 class ltd8_ratings extends CModule
 {
@@ -42,6 +42,15 @@ class ltd8_ratings extends CModule
         ModuleManager::unRegisterModule($this->MODULE_ID);
     }
 
+    private function AddContent(): void
+    {
+        CriterionTable::addMulti([
+            ["NAME" => "Взаимодействие с оператором"],
+            ["NAME" => "Вежливость"],
+            ["NAME" => "Быстрота и правильность ответов"],
+        ]);
+    }
+
     public function InstallDB(): void
     {
         if (!Loader::includeModule($this->MODULE_ID)) {
@@ -52,13 +61,21 @@ class ltd8_ratings extends CModule
 
         MainTable::getEntity()->createDbTable();
         $tableName = MainTable::getEntity()->getDBTableName();
-        $connection->query("CREATE INDEX ix_ltd8_ratings_main_number ON $tableName (REQUEST_NUMBER)");
+        $connection->query(
+            "CREATE UNIQUE INDEX ix_{$tableName}_request_number ON $tableName (REQUEST_NUMBER)");
 
         DataTable::getEntity()->createDbTable();
         $tableName = DataTable::getEntity()->getDBTableName();
-        $connection->query("CREATE INDEX ix_ltd8_ratings_data_main_id ON $tableName (MAIN_ID)");
+        $connection->query(
+            "CREATE INDEX ix_{$tableName}_main_id ON $tableName (MAIN_ID)");
+        $connection->query(
+            "CREATE INDEX ix_{$tableName}_criterion_id ON $tableName (CRITERION_ID)");
+        $connection->query(
+            "CREATE UNIQUE INDEX ix_{$tableName}_main_id_criterion_id ON $tableName (MAIN_ID, CRITERION_ID)");
 
         CriterionTable::getEntity()->createDbTable();
+
+        $this->AddContent();
     }
 
 //    public function InstallFiles()

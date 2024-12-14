@@ -10,25 +10,25 @@ class MainTable extends DataManager
 {
     public static function getTableName()
     {
-        return 'ltd8_ratings_main';
+        return "ltd8_ratings_main";
     }
 
     public static function getMap()
     {
         return [
             new IntegerField(
-                'ID',
+                "ID",
                 [
-                    'primary' => true,
-                    'autocomplete' => true,
-                    'title' => 'Id',
+                    "primary" => true,
+                    "autocomplete" => true,
+                    "title" => "Id",
                 ]
             ),
             new IntegerField(
-                'REQUEST_NUMBER',
+                "REQUEST_NUMBER",
                 [
-                    'required' => true,
-                    'title' => 'Case number',
+                    "required" => true,
+                    "title" => "Case number",
                 ]
             ),
         ];

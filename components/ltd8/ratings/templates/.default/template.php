@@ -1,5 +1,9 @@
 <?php
+
 if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
+
+use Bitrix\Main\Text\HtmlFilter;
+
 /** @var array $arParams */
 /** @var array $arResult */
 /** @global CMain $APPLICATION */
@@ -12,25 +16,32 @@ if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 /** @var string $componentPath */
 /** @var CBitrixComponent $component */
 
-$requestNumber = \Ltd8\Ratings\Main::getRequestNumber();
+$requestNumber = rand(99999, 999999);
 
 ?>
 <div class="ltd8-ratings__box">
 
     <h2>Номер обращения <b><?=$requestNumber?></b></h2>
 
-    <br>
-
-    <div class="ltd8-ratings__stars">
-        <?php
-        foreach (range(1, 5) as $starsValue) {
-            ?>
-            <div
-                class="ltd8-ratings__stars-item js-ltd8-ratings__stars-item"
-                data-nequest-number="<?=$requestNumber?>"
-                data-stars="<?=$starsValue?>"></div>
-            <?php
-        }
+    <?php
+    foreach ($arResult["CRITERION"] as $criterion) {
         ?>
-    </div>
+        <br>
+        <h3><?=HtmlFilter::encode($criterion["NAME"])?></h3>
+        <div class="ltd8-ratings__stars">
+            <?php
+            foreach (range(1, 5) as $starsValue) {
+                ?>
+                <div
+                    class="ltd8-ratings__stars-item js-ltd8-ratings__stars-item"
+                    data-criterion-id="<?=$criterion["ID"]?>"
+                    data-request-number="<?=$requestNumber?>"
+                    data-stars="<?=$starsValue?>"></div>
+                <?php
+            }
+            ?>
+        </div>
+        <?php
+    }
+    ?>
 </div>

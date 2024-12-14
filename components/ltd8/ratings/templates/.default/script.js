@@ -17,19 +17,20 @@ class Ltd8Ratings {
     }
 
     #bindSelectItem = () => {
-        document.querySelector(this.#starsItemSelector).forEach((el) => {
-            el.addEventListener('click', () => {
-                this.#send();
+        document.querySelectorAll(this.#starsItemSelector).forEach((el) => {
+            el.addEventListener('click', (e) => {
+                this.#send(e.currentTarget);
+                e.currentTarget.dataset.active = 'true';
             });
         });
     }
 
-    #send = (requestNumber, ) => {
-        BX.ajax.runAction('ltd8:ratings.Stars.add', {
-            data: {
-                folderId: 1
-            }
-        });
+    #send = (currentTarget) => {
+        BX.ajax.runAction('ltd8:ratings.Stars.add', { data: {
+            criterionId: currentTarget.dataset.criterionId,
+            requestNumber: currentTarget.dataset.requestNumber,
+            stars: currentTarget.dataset.stars,
+        }});
     }
 
 }

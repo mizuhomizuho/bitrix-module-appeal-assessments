@@ -2,46 +2,34 @@
 
 namespace Ltd8\Ratings\Controller;
 
+use Bitrix\Main\Application;
+use Ltd8\Ratings\DataTable;
+use Ltd8\Ratings\MainTable;
+use Ltd8\Ratings\Model;
+
 class Stars extends \Bitrix\Main\Engine\Controller
 {
     public function configureActions()
     {
         return [
             'add' => [
-                'prefilters' => [
-//                    '\Bitrix\Main\Engine\ActionFilter\Authentication',
-//                    '\Bitrix\Main\Engine\ActionFilter\Csrf',
-//                    '\Bitrix\Main\Engine\ActionFilter\HttpMethod',
-                ],
                 '-prefilters' => [
-//                    '\Bitrix\Main\Engine\ActionFilter\Authentication',
-//                    '\Bitrix\Main\Engine\ActionFilter\Csrf',
-//                    '\Bitrix\Main\Engine\ActionFilter\HttpMethod',
+                    '\Bitrix\Main\Engine\ActionFilter\Authentication',
                 ],
-                '+prefilters' => [
-//                    new \Mycomp\Exchangerates\Admin\Filter(),
-//                    '\Bitrix\Main\Engine\ActionFilter\HttpMethod',
-                ]
             ],
-        ];
-    }
-
-    public function listAllowedScopes()
-    {
-        return [
-            Controller::SCOPE_AJAX,
         ];
     }
 
     public function addAction()
     {
+        $request = Application::getInstance()->getContext()->getRequest();
 
-//        \Mycomp\Exchangerates\Admin\Filter::xxx();
-//        LocalRedirect("/bitrix/admin/auth.php");
-//        require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/admin/header.php");
-//        require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_admin.php");
-        var_dump(2221);
-        exit;
+        $criterionId = (int) $request->get("criterionId");
+        $requestNumber = (int) $request->get("requestNumber");
+        $stars = (int) $request->get("stars");
 
+        $modelStars = new Model\Stars();
+
+        return $modelStars->add($criterionId, $requestNumber, $stars);
     }
 }

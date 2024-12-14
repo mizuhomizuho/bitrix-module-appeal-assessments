@@ -1,41 +1,35 @@
 <?php
 
-use Bitrix\Iblock\ElementTable;
-use Bitrix\Iblock\PropertyEnumerationTable;
-use Bitrix\Iblock\PropertyTable;
 use Bitrix\Main\Loader;
-use Bitrix\Main\Engine\Contract\Controllerable;
-use Lcli\Iblock\ElementPropertyTable;
+use Ltd8\Ratings\CriterionTable;
 
-class Ltd8RatingsComponent extends \CBitrixComponent implements Controllerable
+class Ltd8RatingsComponent extends \CBitrixComponent
 {
-    public function configureActions(): array
+    private function getData(): array
     {
-        return [
-            'getTime' => [
-                '-prefilters' => [
-                    '\Bitrix\Main\Engine\ActionFilter\Authentication'
-                ],
+        $return = [];
+
+        $list = CriterionTable::getList([
+            "cache" => [
+                "ttl" => 3600 * 24 * 888,
+                "cache_joins" => true,
             ],
-        ];
+        ]);
+
+        while ($item = $list->fetch()) {
+            $return["CRITERION"][$item["ID"]] = $item;
+        }
+        
+        return $return;
     }
 
-    public function getTimeAction($data)
+    public function executeComponent(): void
     {
-        $res = [];
-
-        return [
-            'res' => $res,
-        ];
-    }
-
-    public function executeComponent()
-    {
-        \Bitrix\Main\Loader::includeModule('ltd8.ratings');
+        Loader::includeModule("ltd8.ratings");
 
         if ($this->startResultCache()) {
 
-            $this->arResult['DATA'] = [];
+            $this->arResult = $this->getData();
 
             $this->includeComponentTemplate();
         }

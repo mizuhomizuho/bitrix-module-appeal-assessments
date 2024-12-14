@@ -74,14 +74,12 @@ class Table
             ->setPageSize(20)
             ->initFromUri();
 
-        $list = $tableClass::getList(
-            array(
-                "filter" => [],
-                "count_total" => true,
-                "offset" => $nav->getOffset(),
-                "limit" => $nav->getLimit(),
-            )
-        );
+        $list = $tableClass::getList([
+            "filter" => [],
+            "count_total" => true,
+            "offset" => $nav->getOffset(),
+            "limit" => $nav->getLimit(),
+        ]);
 
         $nav->setRecordCount($list->getCount());
 
@@ -94,7 +92,7 @@ class Table
             "LINK" => $uri->getUri(),
             "TITLE" => "Добавить новый элемент",
             "ICON" => "btn_new",
-        ]]);
+        ]], false, false);
 
         $lAdmin->DisplayList();
 

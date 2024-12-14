@@ -11,31 +11,31 @@ class CriterionTable extends DataManager
 {
     public static function getTableName()
     {
-        return 'ltd8_ratings_criterion';
+        return "ltd8_ratings_criterion";
     }
 
     public static function getMap()
     {
         return [
             new IntegerField(
-                'ID',
+                "ID",
                 [
-                    'primary' => true,
-                    'autocomplete' => true,
-                    'title' => 'ID',
+                    "primary" => true,
+                    "autocomplete" => true,
+                    "title" => "ID",
                 ]
             ),
             new StringField(
-                'NAME',
+                "NAME",
                 [
-                    'required' => true,
-                    'validation' => function()
+                    "required" => true,
+                    "validation" => function()
                     {
                         return[
                             new LengthValidator(null, 255),
                         ];
                     },
-                    'title' => 'Критерий',
+                    "title" => "Критерий",
                 ]
             ),
         ];
