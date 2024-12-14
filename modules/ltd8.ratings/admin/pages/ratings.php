@@ -2,19 +2,19 @@
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Loader;
-use Ltd8\Ratings\Admin\Edit;
 use Ltd8\Ratings\Admin\Ratings;
 use Ltd8\Ratings\Admin\Table;
 use Ltd8\Ratings\DataTable;
+
+global $APPLICATION;
 
 if (!defined("LTD8_RATINGS_ADMIN")) {
     exit;
 }
 
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_before.php");
-require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_after.php");
 
-global $APPLICATION;
+const LTD8_RATINGS_MODULE_ID = "ltd8.ratings";
 
 $APPLICATION->SetTitle("Оценки");
 
@@ -30,14 +30,25 @@ $request = Application::getInstance()->getContext()->getRequest();
 $tableClass = DataTable::class;
 $tableName = $tableClass::getTableName();
 
+$lAdmin = new \CAdminList($tableName);
+
 $adminRatings = new Ratings();
+$adminRatings->initFilter($lAdmin);
 $params = $adminRatings->getQueryParams();
 
-$table = new Table($tableClass);
+$table = new Table($tableClass, $lAdmin);
+$table->setFilter($adminRatings->getFilter());
 $table->setHeaders($params["headers"]);
 $table->setQuery($params["query"]);
+$table->build();
+
+$lAdmin->CheckListMode();
+
+require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_after.php");
+
+$adminRatings->echoFilter($tableName);
 $table->setNoAdd(true);
 $table->setNoEdit(true);
-$table->echo();
+$lAdmin->DisplayList();
 
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php");

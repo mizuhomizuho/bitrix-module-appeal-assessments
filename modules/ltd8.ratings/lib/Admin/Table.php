@@ -15,10 +15,31 @@ class Table extends Base
     private ?PageNavigation $navigation = null;
     private ?array $headers = null;
     private ?object $query = null;
+    private array $filter = [];
 
-    public function __construct(private string $tableClass)
+    public function __construct(private string $tableClass, private \CAdminList $cAdminList)
     {
 
+    }
+
+    private function getTableClass(): string
+    {
+        return $this->tableClass;
+    }
+
+    private function getCAdminList(): \CAdminList
+    {
+        return $this->cAdminList;
+    }
+
+    private function getFilter(): array
+    {
+        return $this->filter;
+    }
+
+    public function setFilter(array $filter): void
+    {
+        $this->filter = $filter;
     }
 
     private function getQuery(): ?object
@@ -41,8 +62,18 @@ class Table extends Base
         $this->headers = $headers;
     }
 
-    private function getNavigation(): ?PageNavigation
+    private function getNavigation(): PageNavigation
     {
+        if ($this->navigation === null) {
+            $tableClass = $this->getTableClass();
+            $tableName = $tableClass::getTableName();
+            $nav = new PageNavigation($tableName . "_nav");
+            $nav->allowAllRecords(true)
+                ->setPageSize(20)
+                ->initFromUri();
+            $this->setNavigation($nav);
+        }
+
         return $this->navigation;
     }
 
@@ -51,29 +82,28 @@ class Table extends Base
         $this->navigation = $navigation;
     }
 
-    private function loadData(): void
+    private function loadData(): array
     {
-        $tableClass = $this->tableClass;
-        $tableName = $tableClass::getTableName();
+        $tableClass = $this->getTableClass();
 
         $this->change();
 
-        $nav = new PageNavigation($tableName . "_nav");
-        $nav->allowAllRecords(true)
-            ->setPageSize(20)
-            ->initFromUri();
+        $nav = $this->getNavigation();
 
         $query = $this->getQuery();
 
         if ($query === null) {
             $listInstance = $tableClass::getList([
-                "filter" => [],
+                "filter" => $this->getFilter(),
                 "count_total" => true,
                 "offset" => $nav->getOffset(),
                 "limit" => $nav->getLimit(),
             ]);
             $countAll = $listInstance->getCount();
         } else {
+            foreach ($this->getFilter() as $value) {
+                $query->where($value);
+            }
             $countAllQuery = clone $query;
             $countAllQuery->setSelect(["COUNT_ALL"]);
             $countAllQuery->registerRuntimeField(
@@ -89,18 +119,21 @@ class Table extends Base
                 ->setLimit($nav->getLimit());
         }
 
-
         $listResult = $listInstance->fetchAll();
 
-        $this->setList([
+        return [
+            "instance" => $listInstance,
             "countAll" => $countAll,
             "list" => $listResult,
-        ]);
-        $this->setNavigation($nav);
+        ];
     }
 
     public function getList(): ?array
     {
+        if ($this->list === null) {
+            $this->setList($this->loadData());
+        }
+
         return $this->list;
     }
 
@@ -129,11 +162,14 @@ class Table extends Base
         $this->noAdd = $noAdd;
     }
 
-    private function build(array $list, object $lAdmin)
+    public function build()
     {
         $request = Application::getInstance()->getContext()->getRequest();
-        $tableClass = $this->tableClass;
+        $tableClass = $this->getTableClass();
         $tableName = $tableClass::getTableName();
+        $lAdmin = $this->getCAdminList();
+
+        $list = $this->getList()["list"];
 
         foreach ($list as $item) {
             $row = $lAdmin->AddRow($item["ID"], $item);
@@ -161,62 +197,21 @@ class Table extends Base
             }
             $row->AddActions($listActions);
         }
-    }
-
-    private function change()
-    {
-        if (!$this->canWrite()) {
-            return;
-        }
-
-        $request = Application::getInstance()->getContext()->getRequest();
-        $tableClass = $this->tableClass;
-        $tableName = $tableClass::getTableName();
-
-        if ($request->get($tableName . "_mode") === "delete") {
-            $tableClass::delete((int)$request->get($tableName . "_id"));
-            \CAdminMessage::ShowNote("Успешно удалено");
-        }
-    }
-
-    public function echo()
-    {
-        global $APPLICATION;
-
-        $request = Application::getInstance()->getContext()->getRequest();
-        $tableClass = $this->tableClass;
-        $tableName = $tableClass::getTableName();
-
-        $lAdmin = new \CAdminList($tableName);
 
         $listHeaders = [];
-
-        if (is_array($this->getHeaders())) {
-            foreach ($this->getHeaders() as $headerKey => $headerValue) {
-                $listHeaders[] = ["id" => $headerKey, "content" => $headerValue, "default" => true];
-            }
-        } else {
+        if ($this->getHeaders() === null) {
             foreach ($tableClass::getMap() as $value) {
                 $listHeaders[] = ["id" => $value->getName(), "content" => $value->getTitle(), "default" => true];
+            }
+        } else {
+            foreach ($this->getHeaders() as $headerKey => $headerValue) {
+                $listHeaders[] = ["id" => $headerKey, "content" => $headerValue, "default" => true];
             }
         }
         $lAdmin->AddHeaders($listHeaders);
 
         $nav = $this->getNavigation();
-        if ($nav === null) {
-            $this->loadData();
-            $nav = $this->getNavigation();
-        }
-
-        $listResult = $this->getList();
-        if ($listResult === null) {
-            $this->loadData();
-            $listResult = $this->getList();
-        }
-
-        $nav->setRecordCount($listResult["countAll"]);
-
-        $this->build($listResult["list"], $lAdmin);
+        $nav->setRecordCount($this->getList()["countAll"]);
 
         if (!$this->isNoAdd() && $this->canWrite()) {
             $uri = new Uri($request->getRequestedPage());
@@ -229,16 +224,22 @@ class Table extends Base
             ]], false, false);
         }
 
-        $lAdmin->DisplayList();
+        $lAdmin->SetNavigation($nav, "Элементы");
+    }
 
-        $APPLICATION->IncludeComponent(
-            "bitrix:main.pagenavigation",
-            "",
-            array(
-                "NAV_OBJECT" => $nav,
-                "SEF_MODE" => "N",
-            ),
-            false
-        );
+    private function change()
+    {
+        if (!$this->canWrite()) {
+            return;
+        }
+
+        $request = Application::getInstance()->getContext()->getRequest();
+        $tableClass = $this->getTableClass();
+        $tableName = $tableClass::getTableName();
+
+        if ($request->get($tableName . "_mode") === "delete") {
+            $tableClass::delete((int)$request->get($tableName . "_id"));
+            \CAdminMessage::ShowNote("Успешно удалено");
+        }
     }
 }

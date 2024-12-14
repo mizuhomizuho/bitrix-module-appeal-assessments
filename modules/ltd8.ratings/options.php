@@ -1,13 +1,6 @@
 <?php
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 
-use Bitrix\Main\Config\Option;
-use Bitrix\Main\HttpApplication;
-use Bitrix\Main\Loader;
-use Bitrix\Main\Localization\Loc;
-use Moysklad\Sitemap\Initialization;
-
-/** @var array $tabControl */
 /** @global CMain $APPLICATION */
 
 $module_id = "ltd8.ratings";

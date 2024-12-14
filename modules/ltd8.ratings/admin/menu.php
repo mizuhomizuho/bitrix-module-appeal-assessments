@@ -5,11 +5,11 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 global $APPLICATION;
 global $USER;
 
-const LTD8_RATINGS_MODULE_ID = "ltd8.ratings";
+$moduleId = "ltd8.ratings";
 
 $items = [];
 
-if ($APPLICATION->GetGroupRight(LTD8_RATINGS_MODULE_ID) > "D") {
+if ($APPLICATION->GetGroupRight($moduleId) > "D") {
     $items[] = [
         "text" => "Оценки",
         "title" => "Оценки",
@@ -39,6 +39,6 @@ return [[
     "sort" => 8,
     "text" => "Оценки обращений",
     "title" => "Оценки обращений",
-    "items_id" => "module_" . md5(LTD8_RATINGS_MODULE_ID) . "_references",
+    "items_id" => "module_" . md5($moduleId) . "_references",
     "items" => $items,
 ]];
