@@ -22,7 +22,6 @@ The module must store responses and requests in its own database tables.
 - The component should accept the ID of the request as a parameter.
 - The visual design of the component and rating interface should include five stars.
 - The stars should visually correspond to the assigned rating, and the request number should be displayed.
-- Ratings are set by clicking on the stars and processed via an asynchronous request.
 
 ### Installation and Uninstallation:
 
