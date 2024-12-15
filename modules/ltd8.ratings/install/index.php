@@ -59,6 +59,11 @@ class ltd8_ratings extends CModule
             }
 
             if ($request->get("ltd8_ratings_add_test_data") === "on") {
+
+                if ($request->get("ltd8_ratings_add_test_criterion") !== "on") {
+                    $this->AddContentCriterion();
+                }
+                    
                 $this->AddContent();
             }
 
