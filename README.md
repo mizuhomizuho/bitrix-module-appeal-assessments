@@ -8,6 +8,8 @@
 
 <img src="https://github.com/mizuhomizuho/bitrix-module-appeal-assessments/blob/master/screenshots/chrome_Bj72fK8S1H.png" alt="">
 
+<img src="https://github.com/mizuhomizuho/bitrix-module-appeal-assessments/blob/master/screenshots/chrome_wbdNhfCKlM.png" alt="">
+
 <img src="https://github.com/mizuhomizuho/bitrix-module-appeal-assessments/blob/master/screenshots/chrome_sP3uEg0eWP.png" alt="">
 
 <img src="https://github.com/mizuhomizuho/bitrix-module-appeal-assessments/blob/master/screenshots/chrome_metUXAcGNH.png" alt="">
