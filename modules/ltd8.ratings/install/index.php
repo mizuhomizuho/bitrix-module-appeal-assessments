@@ -41,16 +41,92 @@ class ltd8_ratings extends CModule
 
     public function DoInstall(): void
     {
-        ModuleManager::registerModule($this->MODULE_ID);
-        $this->installDB();
-//        $this->installFiles();
+        global $APPLICATION;
+
+        $request = Application::getInstance()->getContext()->getRequest();
+
+        if ($request->isPost() && check_bitrix_sessid()) {
+
+            ModuleManager::registerModule($this->MODULE_ID);
+
+            Loader::includeModule($this->MODULE_ID);
+
+            $this->InstallDB();
+
+            if ($request->get("ltd8_ratings_add_test_criterion") === "on") {
+                $this->AddContentCriterion();
+            }
+
+            if ($request->get("ltd8_ratings_add_test_data") === "on") {
+                $this->AddContent();
+            }
+
+            $this->InstallFiles();
+        } else {
+
+            $parentDir = $this->GetParentDir();
+
+            if (!class_exists(MainTable::class)) {
+                Loader::registerAutoLoadClasses(null, [
+                    MainTable::class => "/$parentDir/modules/ltd8.ratings/lib/MainTable.php",
+                ]);
+            }
+            $connection = Application::getInstance()->getConnection();
+            $isMainTableExists = $connection->isTableExists(MainTable::getTableName());
+
+            $issetComponent = file_exists($_SERVER["DOCUMENT_ROOT"] . "/$parentDir/components/ltd8/ratings");
+
+            define("LTD8_RATINGS_INSTALL_STEP_1_IS_MAIN_TABLE_EXISTS", $isMainTableExists);
+            define("LTD8_RATINGS_INSTALL_STEP_1_ISSET_COMPONENT", $issetComponent);
+            $APPLICATION->IncludeAdminFile(
+                "Установка модуля",
+                __DIR__ . "/install_step1.php"
+            );
+        }
+    }
+
+    private function GetParentDir(): string
+    {
+        $dir = "bitrix";
+        $isLocal = strpos(__DIR__, $_SERVER["DOCUMENT_ROOT"] . "/local/") === 0;
+        if ($isLocal) {
+            $dir = "local";
+        }
+        return $dir;
     }
 
     public function DoUninstall(): void
     {
-        $this->uninstallDB();
-//        $this->uninstallFiles();
-        ModuleManager::unRegisterModule($this->MODULE_ID);
+        global $APPLICATION;
+
+        $request = Application::getInstance()->getContext()->getRequest();
+
+        Loader::includeModule($this->MODULE_ID);
+
+        if ($request->isPost() && check_bitrix_sessid()) {
+            if ($request->get("ltd8_ratings_delete_components") === "on") {
+                $this->UninstallComponentFiles();
+            }
+            if ($request->get("ltd8_ratings_delete_db") === "on") {
+                $this->UninstallDB();
+            }
+            $this->UninstallFiles();
+            ModuleManager::unRegisterModule($this->MODULE_ID);
+        } else {
+            $APPLICATION->IncludeAdminFile(
+                "Удаление модуля",
+                __DIR__ . "/uninstall_step1.php"
+            );
+        }
+    }
+
+    private function AddContentCriterion(): void
+    {
+        CriterionTable::addMulti([
+            ["NAME" => "Взаимодействие с оператором"],
+            ["NAME" => "Вежливость"],
+            ["NAME" => "Быстрота и правильность ответов"],
+        ]);
     }
 
     private function AddContent(): void
@@ -60,12 +136,6 @@ class ltd8_ratings extends CModule
             $data[] = ["REQUEST_NUMBER" => rand(99999, 999999)];
         }
         MainTable::addMulti($data);
-
-        CriterionTable::addMulti([
-            ["NAME" => "Взаимодействие с оператором"],
-            ["NAME" => "Вежливость"],
-            ["NAME" => "Быстрота и правильность ответов"],
-        ]);
 
         $data = [];
         foreach (range(1, 10) as $idMain) {
@@ -82,11 +152,11 @@ class ltd8_ratings extends CModule
 
     public function InstallDB(): void
     {
-        if (!Loader::includeModule($this->MODULE_ID)) {
+        $connection = Application::getConnection();
+
+        if ($connection->isTableExists(MainTable::getTableName())) {
             return;
         }
-
-        $connection = Application::getConnection();
 
         MainTable::getEntity()->createDbTable();
         $tableName = MainTable::getEntity()->getDBTableName();
@@ -103,27 +173,27 @@ class ltd8_ratings extends CModule
             "CREATE UNIQUE INDEX ix_{$tableName}_main_id_criterion_id ON $tableName (MAIN_ID, CRITERION_ID)");
 
         CriterionTable::getEntity()->createDbTable();
-
-        $this->AddContent();
     }
 
-//    public function InstallFiles()
-//    {
-///home/bitrix/www/bitrix/css/mycomp.exchangerates/style.css
-///home/bitrix/www/bitrix/js/mycomp.exchangerates/script.js
-//        CopyDirFiles(
-//            __DIR__."/components/employee",
-//            $_SERVER["DOCUMENT_ROOT"]."/local/components/employee",
-//            true,
-//            true
-//        );
-//    }
+    public function InstallFiles()
+    {
+        $dir = $this->GetParentDir();
+        CopyDirFiles(
+            __DIR__ . "/components/ltd8",
+            $_SERVER["DOCUMENT_ROOT"] . "/$dir/components/ltd8",
+            true,
+            true
+        );
+        CopyDirFiles(
+            __DIR__ . "/admin",
+            $_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin",
+            true,
+            true
+        );
+    }
 
     public function UninstallDB(): void
     {
-        if (!Loader::includeModule($this->MODULE_ID)) {
-            return;
-        }
         $connection = Application::getInstance()->getConnection();
         if ($connection->isTableExists(MainTable::getTableName())) {
             $connection->dropTable(MainTable::getTableName());
@@ -136,8 +206,37 @@ class ltd8_ratings extends CModule
         }
     }
 
-//    public function UninstallFiles()
-//    {
-//        \Bitrix\Main\IO\Directory::deleteDirectory($_SERVER["DOCUMENT_ROOT"]."/local/components/employee");
-//    }
+    private function IsDirEmpty(string $dir): bool
+    {
+        if (!is_readable($dir)) {
+            return false;
+        }
+        return count(scandir($dir)) === 2;
+    }
+
+    private function UninstallComponentFiles()
+    {
+        \Bitrix\Main\IO\Directory::deleteDirectory($_SERVER["DOCUMENT_ROOT"] . "/bitrix/components/ltd8/ratings");
+
+        if ($this->IsDirEmpty($_SERVER["DOCUMENT_ROOT"] . "/bitrix/components/ltd8")) {
+            rmdir($_SERVER["DOCUMENT_ROOT"] . "/bitrix/components/ltd8");
+        }
+
+        \Bitrix\Main\IO\Directory::deleteDirectory($_SERVER["DOCUMENT_ROOT"] . "/local/components/ltd8/ratings");
+
+        if ($this->IsDirEmpty($_SERVER["DOCUMENT_ROOT"] . "/local/components/ltd8")) {
+            rmdir($_SERVER["DOCUMENT_ROOT"] . "/local/components/ltd8");
+        }
+
+        if ($this->IsDirEmpty($_SERVER["DOCUMENT_ROOT"] . "/local/components")) {
+            rmdir($_SERVER["DOCUMENT_ROOT"] . "/local/components");
+        }
+    }
+
+    public function UninstallFiles()
+    {
+        if (file_exists($_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/ltd8_ratings.php")) {
+            unlink($_SERVER["DOCUMENT_ROOT"] . "/bitrix/admin/ltd8_ratings.php");
+        }
+    }
 }

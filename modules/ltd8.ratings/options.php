@@ -18,8 +18,10 @@ $tabControl = new CAdminTabControl(
     $aTabs
 );
 $tabControl->Begin();
+
+$request = Application::getInstance()->getContext()->getRequest();
 ?>
-    <form action="<?= $APPLICATION->GetCurPage() ?>?mid=<?= $module_id ?>&lang=<?= LANG ?>" method="post">
+    <form action="<?= $request->getRequestUri() ?>?mid=<?= $module_id ?>&lang=<?= LANG ?>" method="post">
         <?php
         echo bitrix_sessid_post();
         $tabControl->BeginNextTab();
