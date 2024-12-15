@@ -1,0 +1,4 @@
+<?php
+
+$MESS["LTD8_RATINGS_PAGE_RATINGS_TITLE"] = "Ratings";
+$MESS["LTD8_RATINGS_PAGE_RATINGS_LOCK"] = "Access denied";

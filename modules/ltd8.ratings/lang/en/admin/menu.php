@@ -1,0 +1,13 @@
+<?php
+
+$MESS["LTD8_RATINGS_MENU_MAIN_TEXT"] = "Request Ratings";
+$MESS["LTD8_RATINGS_MENU_MAIN_TITLE"] = "Request Ratings";
+
+$MESS["LTD8_RATINGS_MENU_ITEM_1_TEXT"] = "Ratings";
+$MESS["LTD8_RATINGS_MENU_ITEM_1_TITLE"] = "Ratings";
+
+$MESS["LTD8_RATINGS_MENU_ITEM_2_TEXT"] = "Criteria";
+$MESS["LTD8_RATINGS_MENU_ITEM_2_TITLE"] = "Criteria";
+
+$MESS["LTD8_RATINGS_MENU_ITEM_3_TEXT"] = "Access Rights";
+$MESS["LTD8_RATINGS_MENU_ITEM_3_TITLE"] = "Access Rights";

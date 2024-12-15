@@ -62,6 +62,9 @@ class ltd8_ratings extends CModule
             }
 
             $this->InstallFiles();
+
+            $this->ClearCache();
+
         } else {
 
             $parentDir = $this->GetParentDir();
@@ -85,6 +88,11 @@ class ltd8_ratings extends CModule
         }
     }
 
+    private function ClearCache(): void
+    {
+        $GLOBALS["CACHE_MANAGER"]->CleanAll();
+    }
+
     private function GetParentDir(): string
     {
         $dir = "bitrix";
@@ -104,14 +112,21 @@ class ltd8_ratings extends CModule
         Loader::includeModule($this->MODULE_ID);
 
         if ($request->isPost() && check_bitrix_sessid()) {
+
             if ($request->get("ltd8_ratings_delete_components") === "on") {
                 $this->UninstallComponentFiles();
             }
+
             if ($request->get("ltd8_ratings_delete_db") === "on") {
                 $this->UninstallDB();
             }
+
             $this->UninstallFiles();
+
             ModuleManager::unRegisterModule($this->MODULE_ID);
+
+            $this->ClearCache();
+
         } else {
             $APPLICATION->IncludeAdminFile(
                 "Удаление модуля",
