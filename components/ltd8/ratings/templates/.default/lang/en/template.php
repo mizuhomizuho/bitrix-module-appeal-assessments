@@ -1,0 +1,3 @@
+<?php
+
+$MESS["LTD8_RATINGS_COMPONENTS_TEMPLATE_NUMBER_TITLE"] = "Request number";
