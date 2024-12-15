@@ -4,6 +4,7 @@ namespace Ltd8\Ratings\Admin;
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Entity\ReferenceField;
+use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Text\HtmlFilter;
 use Bitrix\Main\UI\Filter\Options;
 use Ltd8\Ratings\CriterionTable;
@@ -36,20 +37,17 @@ class Ratings
         $arFilter = [];
         if (
             isset($filter["findRequestNumber_numsel"],
-            $filter["findRequestNumber_from"],
-            $filter["findRequestNumber_to"])
+                $filter["findRequestNumber_from"],
+                $filter["findRequestNumber_to"])
         ) {
             if ($filter["findRequestNumber_numsel"] === "less") {
                 $arFilter["<MAIN.REQUEST_NUMBER"] = $filter["findRequestNumber_to"];
-            }
-            elseif ($filter["findRequestNumber_numsel"] === "more") {
+            } elseif ($filter["findRequestNumber_numsel"] === "more") {
                 $arFilter[">MAIN.REQUEST_NUMBER"] = $filter["findRequestNumber_from"];
-            }
-            elseif ($filter["findRequestNumber_numsel"] === "range") {
+            } elseif ($filter["findRequestNumber_numsel"] === "range") {
                 $arFilter["<MAIN.REQUEST_NUMBER"] = $filter["findRequestNumber_to"];
                 $arFilter[">MAIN.REQUEST_NUMBER"] = $filter["findRequestNumber_from"];
-            }
-            elseif ($filter["findRequestNumber_numsel"] === "exact") {
+            } elseif ($filter["findRequestNumber_numsel"] === "exact") {
                 $arFilter["=MAIN.REQUEST_NUMBER"] = $filter["findRequestNumber_to"];
             }
         }
@@ -66,7 +64,7 @@ class Ratings
             'FILTER' => [
                 [
                     "id" => "findRequestNumber",
-                    "name" => "Номер обращения",
+                    "name" => Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_RATINGS_FILTER_NUMBER_TITLE"),
                     'type' => 'number',
                     "default" => true,
                 ],
@@ -81,9 +79,9 @@ class Ratings
         return [
             "headers" => [
                 "ID" => "ID",
-                "REQUEST_NUMBER" => "Номер обращения",
-                "CRITERION_NAME" => "Критерий",
-                "STARS" => "Количество звезд",
+                "REQUEST_NUMBER" => Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_RATINGS_COL_NUMBER"),
+                "CRITERION_NAME" => Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_RATINGS_COL_CRITERION"),
+                "STARS" => Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_RATINGS_COL_STARS"),
             ],
             "select" => [
                 "ID",

@@ -3,6 +3,7 @@
 namespace Ltd8\Ratings\Admin;
 
 use Bitrix\Main\Application;
+use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Text\HtmlFilter;
 
 class CriterionEdit extends Base
@@ -34,10 +35,10 @@ class CriterionEdit extends Base
             ];
             if ($isEdit) {
                 $tableClass::update((int)$request->get($tableName . "_id"), $editParams);
-                \CAdminMessage::ShowNote("Успешно изменено");
+                \CAdminMessage::ShowNote(Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_CRITERION_EDIT_EDIT_OK"));
             } else {
                 $tableClass::add($editParams);
-                \CAdminMessage::ShowNote("Успешно добавлено");
+                \CAdminMessage::ShowNote(Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_CRITERION_EDIT_ADD_OK"));
             }
         }
     }
@@ -45,7 +46,7 @@ class CriterionEdit extends Base
     public function echo()
     {
         if (!$this->canWrite()) {
-            \CAdminMessage::ShowNote("Доступ запрещен");
+            \CAdminMessage::ShowNote(Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_CRITERION_LOCK"));
             return;
         }
 
@@ -63,9 +64,9 @@ class CriterionEdit extends Base
             $currentValue = $row;
         }
 
-        $tabText = "Добавить";
+        $tabText = Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_CRITERION_TAB_TITLE_ADD");
         if ($isEdit) {
-            $tabText = "Изменить";
+            $tabText = Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_CRITERION_TAB_TITLE_EDIT");
         }
 
         $aTabs = [
@@ -87,7 +88,7 @@ class CriterionEdit extends Base
                 ?>
                 <tr>
                     <td>
-                        ID
+                        <?= Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_CRITERION_FIELD_TITLE_ID") ?>
                     </td>
                     <td>
                         <?= HtmlFilter::encode($currentValue["ID"]) ?>
@@ -99,7 +100,7 @@ class CriterionEdit extends Base
 
             <tr>
                 <td>
-                    Критерий
+                    <?= Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_CRITERION_FIELD_TITLE_NAME") ?>
                 </td>
                 <td>
                     <input type="text" style="width: 100%;" name="<?= $tableName ?>_name"
@@ -109,7 +110,8 @@ class CriterionEdit extends Base
 
             <?php $tabControl->Buttons() ?>
 
-            <input type="submit" name="save" value="Сохранить" class="adm-btn-save"/>
+            <input type="submit" name="save" value="<?= Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_CRITERION_BTN_SAVE") ?>"
+                   class="adm-btn-save"/>
 
             <?php $tabControl->End() ?>
 

@@ -2,6 +2,8 @@
 
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 
+use Bitrix\Main\Localization\Loc;
+
 global $APPLICATION;
 global $USER;
 
@@ -11,21 +13,21 @@ $items = [];
 
 if ($APPLICATION->GetGroupRight($moduleId) > "D") {
     $items[] = [
-        "text" => "Оценки",
-        "title" => "Оценки",
+        "text" => Loc::getMessage("LTD8_RATINGS_MENU_ITEM_1_TEXT"),
+        "title" => Loc::getMessage("LTD8_RATINGS_MENU_ITEM_1_TITLE"),
         "url" => "/bitrix/admin/ltd8_ratings.php?page=ratings",
     ];
     $items[] = [
-        "text" => "Критерии",
-        "title" => "Критерии",
+        "text" => Loc::getMessage("LTD8_RATINGS_MENU_ITEM_2_TEXT"),
+        "title" => Loc::getMessage("LTD8_RATINGS_MENU_ITEM_2_TITLE"),
         "url" => "/bitrix/admin/ltd8_ratings.php?page=criterion",
     ];
 }
 
 if ($USER->IsAdmin()) {
     $items[] = [
-        "text" => "Права доступа",
-        "title" => "Права доступа",
+        "text" => Loc::getMessage("LTD8_RATINGS_MENU_ITEM_3_TEXT"),
+        "title" => Loc::getMessage("LTD8_RATINGS_MENU_ITEM_3_TITLE"),
         "url" => "/bitrix/admin/settings.php?mid=ltd8.ratings",
     ];
 }
@@ -37,8 +39,8 @@ if (!$items) {
 return [[
     "parent_menu" => "global_menu_marketing",
     "sort" => 8,
-    "text" => "Оценки обращений",
-    "title" => "Оценки обращений",
+    "text" => Loc::getMessage("LTD8_RATINGS_MENU_MAIN_TEXT"),
+    "title" => Loc::getMessage("LTD8_RATINGS_MENU_MAIN_TITLE"),
     "items_id" => "module_" . md5($moduleId) . "_references",
     "items" => $items,
 ]];

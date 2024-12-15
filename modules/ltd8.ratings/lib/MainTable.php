@@ -21,14 +21,14 @@ class MainTable extends DataManager
                 [
                     "primary" => true,
                     "autocomplete" => true,
-                    "title" => "ID",
+                    "title" => Loc::getMessage("LTD8_RATINGS_LIB_MAIN_TABLE_TITLE_ID"),
                 ]
             ),
             new IntegerField(
                 "REQUEST_NUMBER",
                 [
                     "required" => true,
-                    "title" => "Номер обращения",
+                    "title" => Loc::getMessage("LTD8_RATINGS_LIB_MAIN_TABLE_TITLE_REQUEST_NUMBER"),
                 ]
             ),
         ];

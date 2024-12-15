@@ -2,6 +2,7 @@
 
 namespace Ltd8\Ratings\Model;
 
+use Bitrix\Main\Localization\Loc;
 use Ltd8\Ratings\DataTable;
 use Ltd8\Ratings\MainTable;
 
@@ -17,14 +18,14 @@ class Stars
             ],
         ]);
         if ($item = $list->fetch()) {
-            $mainId = (int) $item["ID"];
+            $mainId = (int)$item["ID"];
         }
 
         if ($mainId === 0) {
             $result = MainTable::add([
                 "REQUEST_NUMBER" => $requestNumber,
             ]);
-            $mainId = (int) $result->getId();
+            $mainId = (int)$result->getId();
         }
 
         if ($mainId) {
@@ -40,7 +41,7 @@ class Stars
 
         $mainId = $this->getMainId($requestNumber);
         if (!$mainId) {
-            $return["messages"][] = "Ошибка";
+            $return["messages"][] = Loc::getMessage("LTD8_RATINGS_LIB_MODEL_STARS_ADD_COMMON_ERROR");
             return $return;
         }
 
@@ -54,8 +55,7 @@ class Stars
             DataTable::update($item["ID"], [
                 "STARS" => $stars,
             ]);
-        }
-        else {
+        } else {
             DataTable::add([
                 "MAIN_ID" => $mainId,
                 "CRITERION_ID" => $criterionId,

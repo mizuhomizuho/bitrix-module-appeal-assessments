@@ -3,6 +3,7 @@
 use Bitrix\Main\Application;
 use Bitrix\Main\Entity\Base;
 use Bitrix\Main\Loader;
+use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\ModuleManager;
 use Ltd8\Ratings\CriterionTable;
 use Ltd8\Ratings\DataTable;
@@ -20,9 +21,9 @@ class ltd8_ratings extends CModule
         $this->MODULE_VERSION = $arModuleVersion["VERSION"];
         $this->MODULE_VERSION_DATE = $arModuleVersion["VERSION_DATE"];
 
-        $this->MODULE_NAME = "Оценки обращений";
-        $this->MODULE_DESCRIPTION = "Оценки обращений";
-        $this->PARTNER_NAME = "Ltd8";
+        $this->MODULE_NAME = Loc::getMessage("LTD8_RATINGS_INSTALL_INDEX_MODULE_NAME");
+        $this->MODULE_DESCRIPTION = Loc::getMessage("LTD8_RATINGS_INSTALL_INDEX_MODULE_DESCRIPTION");
+        $this->PARTNER_NAME = Loc::getMessage("LTD8_RATINGS_INSTALL_INDEX_PARTNER_NAME");
 
         $this->MODULE_GROUP_RIGHTS = "Y";
     }
@@ -32,9 +33,9 @@ class ltd8_ratings extends CModule
         return [
             "reference_id" => ["D", "R", "W"],
             "reference" => [
-                "[D] Доступ запрещен",
-                "[R] Чтение",
-                "[W] Полный доступ"
+                Loc::getMessage("LTD8_RATINGS_INSTALL_INDEX_RIGHT_D"),
+                Loc::getMessage("LTD8_RATINGS_INSTALL_INDEX_RIGHT_R"),
+                Loc::getMessage("LTD8_RATINGS_INSTALL_INDEX_RIGHT_W"),
             ],
         ];
     }
@@ -82,7 +83,7 @@ class ltd8_ratings extends CModule
             define("LTD8_RATINGS_INSTALL_STEP_1_IS_MAIN_TABLE_EXISTS", $isMainTableExists);
             define("LTD8_RATINGS_INSTALL_STEP_1_ISSET_COMPONENT", $issetComponent);
             $APPLICATION->IncludeAdminFile(
-                "Установка модуля",
+                Loc::getMessage("LTD8_RATINGS_INSTALL_INDEX_STEP_1_TITLE"),
                 __DIR__ . "/install_step1.php"
             );
         }
@@ -129,7 +130,7 @@ class ltd8_ratings extends CModule
 
         } else {
             $APPLICATION->IncludeAdminFile(
-                "Удаление модуля",
+                Loc::getMessage("LTD8_RATINGS_INSTALL_INDEX_UNINSTALL_STEP_1_TITLE"),
                 __DIR__ . "/uninstall_step1.php"
             );
         }
@@ -138,9 +139,9 @@ class ltd8_ratings extends CModule
     private function AddContentCriterion(): void
     {
         CriterionTable::addMulti([
-            ["NAME" => "Взаимодействие с оператором"],
-            ["NAME" => "Вежливость"],
-            ["NAME" => "Быстрота и правильность ответов"],
+            ["NAME" => Loc::getMessage("LTD8_RATINGS_INSTALL_INDEX_CONTENT_CRITERION_1")],
+            ["NAME" => Loc::getMessage("LTD8_RATINGS_INSTALL_INDEX_CONTENT_CRITERION_2")],
+            ["NAME" => Loc::getMessage("LTD8_RATINGS_INSTALL_INDEX_CONTENT_CRITERION_3")],
         ]);
     }
 

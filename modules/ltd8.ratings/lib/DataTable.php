@@ -21,28 +21,28 @@ class DataTable extends DataManager
                 [
                     "primary" => true,
                     "autocomplete" => true,
-                    "title" => "ID",
+                    "title" => Loc::getMessage("LTD8_RATINGS_LIB_DATA_TABLE_TITLE_ID"),
                 ]
             ),
             new IntegerField(
                 "MAIN_ID",
                 [
                     "required" => true,
-                    "title" => "MAIN_ID",
+                    "title" => Loc::getMessage("LTD8_RATINGS_LIB_DATA_TABLE_TITLE_MAIN_ID"),
                 ]
             ),
             new IntegerField(
                 "CRITERION_ID",
                 [
                     "required" => true,
-                    "title" => "CRITERION_ID",
+                    "title" => Loc::getMessage("LTD8_RATINGS_LIB_DATA_TABLE_TITLE_CRITERION_ID"),
                 ]
             ),
             new IntegerField(
                 "STARS",
                 [
                     "required" => true,
-                    "title" => "Количество звезд",
+                    "title" => Loc::getMessage("LTD8_RATINGS_LIB_DATA_TABLE_TITLE_STARS"),
                 ]
             ),
         ];

@@ -2,6 +2,7 @@
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Loader;
+use Bitrix\Main\Localization\Loc;
 use Ltd8\Ratings\Admin\CriterionEdit;
 use Ltd8\Ratings\Admin\Table;
 use Ltd8\Ratings\CriterionTable;
@@ -16,10 +17,10 @@ require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_b
 
 const LTD8_RATINGS_MODULE_ID = "ltd8.ratings";
 
-$APPLICATION->SetTitle("Критерии");
+$APPLICATION->SetTitle(Loc::getMessage("LTD8_RATINGS_PAGE_CRITERION_TITLE"));
 
 if ($APPLICATION->GetGroupRight(LTD8_RATINGS_MODULE_ID) < "R") {
-    \CAdminMessage::ShowNote("Доступ запрещен");
+    \CAdminMessage::ShowNote(Loc::getMessage("LTD8_RATINGS_PAGE_CRITERION_LOCK"));
     require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php");
     return;
 }
@@ -34,8 +35,7 @@ if ($request->get($tableName . "_mode") === "edit") {
     require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_after.php");
     $edit = new CriterionEdit($tableClass);
     $edit->echo();
-}
-else {
+} else {
     $lAdmin = new \CAdminUiList($tableName);
     $table = new Table($tableClass, $lAdmin);
     $table->build();

@@ -3,6 +3,7 @@
 namespace Ltd8\Ratings\Admin;
 
 use Bitrix\Main\Application;
+use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\ORM\Fields\ExpressionField;
 use Bitrix\Main\UI\PageNavigation;
 use Bitrix\Main\Web\Uri;
@@ -167,7 +168,7 @@ class Table extends Base
         $lAdmin = $this->getCAdminList();
 
         $lAdmin->AddGroupActionTable([
-            "delete" => "Удалить",
+            "delete" => Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_TABLE_BTN_DELETE"),
         ]);
 
         $list = $this->getList()["list"];
@@ -182,7 +183,7 @@ class Table extends Base
                     $uri->addParams([$tableName . "_mode" => "edit"]);
                     $listActions[] = [
                         "ICON" => "edit",
-                        "TEXT" => "Редактировать",
+                        "TEXT" => Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_TABLE_BTN_EDIT"),
                         "LINK" => $uri->getUri(),
                     ];
                 }
@@ -209,14 +210,14 @@ class Table extends Base
             $uri = new Uri($request->getRequestedPage());
             $uri->addParams(["page" => $request->get("page"), $tableName . "_mode" => "edit"]);
             $lAdmin->AddAdminContextMenu([[
-                "TEXT" => "Добавить",
+                "TEXT" => Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_TABLE_BTN_ADD_TEXT"),
                 "LINK" => $uri->getUri(),
-                "TITLE" => "Добавить новый элемент",
+                "TITLE" => Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_TABLE_BTN_ADD_TITLE"),
                 "ICON" => "btn_new",
             ]], false, false);
         }
 
-        $lAdmin->SetNavigation($nav, "Элементы");
+        $lAdmin->SetNavigation($nav, Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_TABLE_NAV_ELEMENT_TITLE"));
     }
 
     private function change()

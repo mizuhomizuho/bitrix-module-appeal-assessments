@@ -2,6 +2,7 @@
 
 namespace Ltd8\Ratings;
 
+use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\ORM\Data\DataManager;
 use Bitrix\Main\ORM\Fields\IntegerField;
 use Bitrix\Main\ORM\Fields\StringField;
@@ -22,20 +23,19 @@ class CriterionTable extends DataManager
                 [
                     "primary" => true,
                     "autocomplete" => true,
-                    "title" => "ID",
+                    "title" => Loc::getMessage("LTD8_RATINGS_LIB_CRITERION_TABLE_TITLE_ID"),
                 ]
             ),
             new StringField(
                 "NAME",
                 [
                     "required" => true,
-                    "validation" => function()
-                    {
-                        return[
+                    "validation" => function () {
+                        return [
                             new LengthValidator(null, 255),
                         ];
                     },
-                    "title" => "Критерий",
+                    "title" => Loc::getMessage("LTD8_RATINGS_LIB_CRITERION_TABLE_TITLE_NAME"),
                 ]
             ),
         ];

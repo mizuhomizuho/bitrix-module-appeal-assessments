@@ -2,6 +2,7 @@
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Loader;
+use Bitrix\Main\Localization\Loc;
 use Ltd8\Ratings\Admin\Ratings;
 use Ltd8\Ratings\Admin\Table;
 use Ltd8\Ratings\DataTable;
@@ -16,10 +17,10 @@ require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_b
 
 const LTD8_RATINGS_MODULE_ID = "ltd8.ratings";
 
-$APPLICATION->SetTitle("Оценки");
+$APPLICATION->SetTitle(Loc::getMessage("LTD8_RATINGS_PAGE_RATINGS_TITLE"));
 
 if ($APPLICATION->GetGroupRight(LTD8_RATINGS_MODULE_ID) < "R") {
-    \CAdminMessage::ShowNote("Доступ запрещен");
+    \CAdminMessage::ShowNote(Loc::getMessage("LTD8_RATINGS_PAGE_RATINGS_LOCK"));
     require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php");
     return;
 }

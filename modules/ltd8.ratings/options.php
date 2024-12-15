@@ -2,6 +2,7 @@
 if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 
 use Bitrix\Main\Application;
+use Bitrix\Main\Localization\Loc;
 
 /** @global CMain $APPLICATION */
 
@@ -13,7 +14,7 @@ if ($APPLICATION->GetGroupRight($module_id) < "W") {
 
 $aTabs = [[
     "DIV" => "module_" . md5($module_id) . "_edit",
-    "TAB" => "Настройка прав",
+    "TAB" => Loc::getMessage("LTD8_RATINGS_OPTIONS_PAGE_TAB_RIGHTS_TITLE"),
 ]];
 $tabControl = new CAdminTabControl(
     "module_" . md5($module_id) . "_tab_control",
@@ -30,7 +31,8 @@ $request = Application::getInstance()->getContext()->getRequest();
         require_once($_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/admin/group_rights.php');
         $tabControl->Buttons();
         ?>
-        <input class="adm-btn-save" type="submit" name="Update" value="Сохранить настройки"/>
+        <input class="adm-btn-save" type="submit" name="Update"
+               value="<?= Loc::getMessage("LTD8_RATINGS_OPTIONS_PAGE_BTN_RIGHTS_SAVE") ?>"/>
     </form>
 <?php
 $tabControl->End();
