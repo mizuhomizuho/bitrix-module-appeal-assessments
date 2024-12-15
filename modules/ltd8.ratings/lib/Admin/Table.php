@@ -177,7 +177,11 @@ class Table extends Base
             $row = $lAdmin->AddRow($item["ID"], $item);
             $uri = new Uri($request->getRequestedPage());
             $listActions = [];
-            $uri->addParams(["page" => $request->get("page"), $tableName . "_id" => $item["ID"]]);
+            $uri->addParams([
+                "page" => $request->get("page"),
+                $tableName . "_id" => $item["ID"],
+                "lang" => LANG,
+            ]);
             if ($this->canWrite()) {
                 if (!$this->isNoEdit()) {
                     $uri->addParams([$tableName . "_mode" => "edit"]);
@@ -208,7 +212,11 @@ class Table extends Base
 
         if (!$this->isNoAdd() && $this->canWrite()) {
             $uri = new Uri($request->getRequestedPage());
-            $uri->addParams(["page" => $request->get("page"), $tableName . "_mode" => "edit"]);
+            $uri->addParams([
+                "page" => $request->get("page"),
+                $tableName . "_mode" => "edit",
+                "lang" => LANG,
+            ]);
             $lAdmin->AddAdminContextMenu([[
                 "TEXT" => Loc::getMessage("LTD8_RATINGS_LIB_ADMIN_TABLE_BTN_ADD_TEXT"),
                 "LINK" => $uri->getUri(),
