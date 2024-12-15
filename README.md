@@ -2,37 +2,37 @@
 
 ## Technical Specification
 
-### Task:
+### Task
 
 Develop a Bitrix module "Request Ratings".
 The module consists of an administrative interface and a component.
 
-### Objective: Gather client ratings based on 3 criteria:
+### Objective: Gather client ratings based on 3 criteria
 
 - Interaction with the operator (1–5).
 - Politeness (1–5).
 - Speed and accuracy of responses (1–5).
 
-### Data:
+### Data
 
 The module must store responses and requests in its own database tables.
 
-### Public Section:
+### Public Section
 
 - The component should accept the ID of the request as a parameter.
 - The visual design of the component and rating interface should include five stars.
 - The stars should visually correspond to the assigned rating, and the request number should be displayed.
 
-### Installation and Uninstallation:
+### Installation and Uninstallation
 
 The module must include an installer that creates the component and database tables.
 A deinstaller should remove the tables and the component.
 
-### Module Management:
+### Module Management
 
 The module should have a settings page where user group permissions can be configured.
 
-### Data Management:
+### Data Management
 
 The module should include a menu item in the "Marketing" section, named "Request Ratings", which leads to a page displaying the list of submitted ratings.
 The ratings should be displayed as a list with pagination.
