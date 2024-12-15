@@ -35,5 +35,5 @@ $request = Application::getInstance()->getContext()->getRequest();
         <?php
     }
     ?>
-    <input type="submit" value="Установить">
+    <input type="submit" value="<?= Loc::getMessage("LTD8_RATINGS_INSTALL_BTN_OK") ?>">
 </form>
