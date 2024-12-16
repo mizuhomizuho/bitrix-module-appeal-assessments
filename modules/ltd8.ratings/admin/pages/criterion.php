@@ -35,13 +35,14 @@ if ($request->get($tableName . "_mode") === "edit") {
     require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_after.php");
     $edit = new CriterionEdit($tableClass);
     $edit->echo();
-} else {
-    $lAdmin = new \CAdminUiList($tableName);
-    $table = new Table($tableClass, $lAdmin);
-    $table->build();
-    $lAdmin->CheckListMode();
-    require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_after.php");
-    $table->echoTable();
+    require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php");
+    return;
 }
 
+$lAdmin = new \CAdminUiList($tableName);
+$table = new Table($tableClass, $lAdmin);
+$table->build();
+$lAdmin->CheckListMode();
+require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_admin_after.php");
+$table->echoTable();
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/epilog_admin.php");
